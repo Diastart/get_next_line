@@ -6,7 +6,7 @@
 /*   By: Dias <dinursul@student.42.it>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/04 14:36:57 by Dias              #+#    #+#             */
-/*   Updated: 2025/01/04 15:25:54 by Dias             ###   ########.fr       */
+/*   Updated: 2025/01/04 15:57:26 by Dias             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,3 +48,15 @@ char	*get_next_line(int fd)
 	free(line);
 	return (NULL);
 }
+
+/* 
+v[0] -> for the amout of bytes that was read
+v[1] -> the position of new line if it exists in the line
+v[2] -> the overall length of the line whatever the line is
+---------------------
+it can be
+1) NULL + BUFFER
+2) REMAINDER + BUFFER
+3) REMAINDER + NULL
+---------------------
+*/
