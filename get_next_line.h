@@ -3,29 +3,26 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Dias <dinursul@student.42.it>              +#+  +:+       +#+        */
+/*   By: dnursult <dnursult@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/04 14:23:51 by Dias              #+#    #+#             */
-/*   Updated: 2025/01/04 15:04:29 by Dias             ###   ########.fr       */
+/*   Updated: 2025/01/16 11:03:06 by dnursult         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
-# include <unistd.h>
+
 # include <stdlib.h>
-# include <fcntl.h>
-# include <stdio.h>
+# include <unistd.h>
 
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 42
 # endif
 
 char	*get_next_line(int fd);
+char	*ft_strchr(char *s, int c);
 int		ft_strlen(char *str);
-void	ft_strcopy(char *dst, char *src, int src_len);
-int		ft_newline_position(char *str, int size);
-char	*ft_join(char *left, char *right, int right_len);
-char	*ft_split(char *line, int newline_position, char **remainder);
+char	*ft_strjoin(char *s1, char *s2);
 
 #endif

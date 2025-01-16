@@ -3,14 +3,32 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Dias <dinursul@student.42.it>              +#+  +:+       +#+        */
+/*   By: dnursult <dnursult@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/04 13:42:11 by Dias              #+#    #+#             */
-/*   Updated: 2025/01/04 15:05:06 by Dias             ###   ########.fr       */
+/*   Updated: 2025/01/16 11:02:50 by dnursult         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+
+char	*ft_strchr(char *s, int c)
+{
+	int	i;
+
+	i = 0;
+	if (!s)
+		return (NULL);
+	while (s[i])
+	{
+		if (s[i] == (char)c)
+			return ((char *)&s[i]);
+		i++;
+	}
+	if (s[i] == (char)c)
+		return ((char *)&s[i]);
+	return (NULL);
+}
 
 int	ft_strlen(char *str)
 {
@@ -24,77 +42,27 @@ int	ft_strlen(char *str)
 	return (i);
 }
 
-void	ft_strcopy(char *dst, char *src, int src_len)
+char	*ft_strjoin(char *s1, char *s2)
 {
-	int	i;
+	char	*str;
+	int		i;
+	int		j;
 
-	if (!dst || !src)
-		return ;
-	i = 0;
-	while (i < src_len && src[i])
+	if (!s1)
 	{
-		dst[i] = src[i];
-		i++;
+		s1 = malloc(sizeof(char) * 1);
+		s1[0] = '\0';
 	}
-	dst[i] = '\0';
-}
-
-int	ft_newline_position(char *str, int size)
-{
-	int	i;
-
+	str = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
 	if (!str)
-		return (-1);
-	i = 0;
-	while (i < size)
-	{
-		if (str[i] == '\n')
-			return (i);
-		i++;
-	}
-	return (-1);
-}
-
-char	*ft_join(char *left, char *right, int right_len)
-{
-	char	*line;
-	int		left_len;
-
-	left_len = ft_strlen(left);
-	line = malloc(sizeof(char) * (left_len + right_len + 1));
-	if (!line)
 		return (NULL);
-	if (left)
-		ft_strcopy(line, left, left_len);
-	ft_strcopy(line + left_len, right, right_len);
-	if (left)
-		free(left);
-	return (line);
-}
-
-char	*ft_split(char *line, int newline_position, char **remainder)
-{
-	char	*subline;
-	int		len;
-
-	len = ft_strlen(line);
-	subline = malloc(sizeof(char) * (newline_position + 2));
-	if (!subline)
-		return (NULL);
-	ft_strcopy(subline, line, newline_position + 1);
-	if (line[newline_position + 1])
-	{
-		*remainder = malloc(sizeof(char) * (len - newline_position));
-		if (!(*remainder))
-		{
-			free(line);
-			return (NULL);
-		}
-		ft_strcopy(*remainder, line + newline_position + 1,
-			len - newline_position - 1);
-	}
-	else
-		*remainder = NULL;
-	free(line);
-	return (subline);
+	i = -1;
+	while (s1[++i])
+		str[i] = s1[i];
+	j = 0;
+	while (s2[j])
+		str[i++] = s2[j++];
+	str[i] = '\0';
+	free(s1);
+	return (str);
 }

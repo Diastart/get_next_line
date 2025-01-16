@@ -3,60 +3,101 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Dias <dinursul@student.42.it>              +#+  +:+       +#+        */
+/*   By: dnursult <dnursult@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/04 14:36:57 by Dias              #+#    #+#             */
-/*   Updated: 2025/01/04 15:57:26 by Dias             ###   ########.fr       */
+/*   Updated: 2025/01/16 11:12:14 by dnursult         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static void	remainder_check(char **remainder, char **line, int *v)
+static char	*read_to_buffer(int fd, char *store)
 {
-	if (*remainder)
+	char	*buffer;
+	int		read_bytes;
+
+	buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	if (!buffer)
+		return (NULL);
+	read_bytes = 1;
+	while (read_bytes > 0 && !ft_strchr(store, '\n'))
 	{
-		*line = *remainder;
-		v[2] = ft_strlen(*remainder);
-		*remainder = NULL;
+		read_bytes = read(fd, buffer, BUFFER_SIZE);
+		if (read_bytes == -1)
+		{
+			free(buffer);
+			return (NULL);
+		}
+		buffer[read_bytes] = '\0';
+		store = ft_strjoin(store, buffer);
 	}
+	free(buffer);
+	return (store);
+}
+
+static char	*get_line(char *store)
+{
+	char	*line;
+	int		i;
+
+	i = 0;
+	if (!store[i])
+		return (NULL);
+	while (store[i] && store[i] != '\n')
+		i++;
+	line = malloc(sizeof(char) * (i + 2));
+	if (!line)
+		return (NULL);
+	i = 0;
+	while (store[i] && store[i] != '\n')
+	{
+		line[i] = store[i];
+		i++;
+	}
+	if (store[i] == '\n')
+		line[i++] = '\n';
+	line[i] = '\0';
+	return (line);
+}
+
+static char	*update_store(char *store)
+{
+	char	*new_store;
+	int		i;
+	int		j;
+
+	i = 0;
+	while (store[i] && store[i] != '\n')
+		i++;
+	if (!store[i])
+	{
+		free(store);
+		return (NULL);
+	}
+	new_store = malloc(sizeof(char) * (ft_strlen(store) - i + 1));
+	if (!new_store)
+		return (NULL);
+	i++;
+	j = 0;
+	while (store[i])
+		new_store[j++] = store[i++];
+	new_store[j] = '\0';
+	free(store);
+	return (new_store);
 }
 
 char	*get_next_line(int fd)
 {
-	static char	*remainder;
-	char		buffer[BUFFER_SIZE];
+	static char	*store;
 	char		*line;
-	int			v[3];
 
-	if (fd < 0 || read (fd, NULL, 0) < 0 || BUFFER_SIZE <= 0)
+	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	line = NULL;
-	remainder_check(&remainder, &line, v);
-	v[0] = read (fd, buffer, BUFFER_SIZE);
-	while (v[0] > 0)
-	{
-		line = ft_join(line, buffer, v[0]);
-		v[2] += v[0];
-		v[1] = ft_newline_position(line, v[2]);
-		if (v[1] >= 0)
-			return (ft_split(line, v[1], &remainder));
-		v[0] = read (fd, buffer, BUFFER_SIZE);
-	}
-	if (line && *line)
-		return (line);
-	free(line);
-	return (NULL);
+	store = read_to_buffer(fd, store);
+	if (!store)
+		return (NULL);
+	line = get_line(store);
+	store = update_store(store);
+	return (line);
 }
-
-/* 
-v[0] -> for the amout of bytes that was read
-v[1] -> the position of new line if it exists in the line
-v[2] -> the overall length of the line whatever the line is
----------------------
-it can be
-1) NULL + BUFFER
-2) REMAINDER + BUFFER
-3) REMAINDER + NULL
----------------------
-*/
